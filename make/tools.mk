@@ -227,7 +227,7 @@ ifneq ("$(wildcard $(ARM_SDK_DIR))","")
   ARM_SDK_PREFIX := $(ARM_SDK_DIR)/bin/arm-none-eabi-
 else
   ifneq ($(MAKECMDGOALS),arm_sdk_install)
-    $(info **WARNING** ARM-SDK not in $(ARM_SDK_DIR)  Please run 'make arm_sdk_install')
+    $(warning **WARNING** ARM-SDK not in $(ARM_SDK_DIR)  Please run 'make arm_sdk_install')
   endif
   # not installed, hope it's in the path...
   ARM_SDK_PREFIX ?= arm-none-eabi-
@@ -243,4 +243,3 @@ endif
 GIT_BRANCH_NAME := $(shell git rev-parse --abbrev-ref HEAD)
 GIT_COMMIT_HASH := $(shell git rev-parse --short HEAD)
 GIT_DIRTY_LABEL := $(shell git diff --quiet || echo -dirty)
-

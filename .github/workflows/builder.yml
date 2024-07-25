@@ -1,0 +1,43 @@
+name: builder
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "*.*.*"
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4.1.7
+
+      - name: Build image
+        id: build_image
+        uses: redhat-actions/buildah-build@v2.13
+        with:
+          image: ghcr.io/${{ github.repository }}
+          platforms: linux/amd64
+          tags: latest
+          containerfiles: ./Containerfile
+
+      - name: Push image
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          tags: ${{ steps.build_image.outputs.tags }}
+          registry: ghcr.io
+          image: ${{ github.repository }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
